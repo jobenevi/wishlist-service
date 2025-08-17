@@ -1,0 +1,26 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: wishlist-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: wishlist
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wishlist-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/wishlist"
+    depends_on:
+      mongo:
+        condition: service_healthy
