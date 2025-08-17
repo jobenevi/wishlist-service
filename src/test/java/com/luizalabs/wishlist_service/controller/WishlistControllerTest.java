@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luizalabs.wishlist_service.controller.request.WishlistProductRequest;
 import com.luizalabs.wishlist_service.controller.response.WishlistProductResponse;
 import com.luizalabs.wishlist_service.usecase.AddProductWishlist;
+import com.luizalabs.wishlist_service.usecase.RemoveProductWishlist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Set;
 
@@ -28,6 +30,9 @@ class WishlistControllerTest {
 
     @MockitoBean
     private AddProductWishlist addProductWishlist;
+
+    @MockitoBean
+    private RemoveProductWishlist removeProductWishlist;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -59,4 +64,17 @@ class WishlistControllerTest {
                 .andExpect(jsonPath("$.userId").value(userId))
                 .andExpect(jsonPath("$.productIds[0]").value("prod-1"));
     }
+
+    @Test
+    void removeProductReturnsNoContentWhenProductExists() throws Exception {
+        final String productId = "prod-1";
+        Mockito.doNothing().when(removeProductWishlist).removeProduct(userId, productId);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/wishlists/{userId}/items/{productId}", userId, productId))
+                .andExpect(status().isNoContent());
+
+        Mockito.verify(removeProductWishlist).removeProduct(userId, productId);
+    }
+
 }

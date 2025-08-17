@@ -12,8 +12,9 @@ public class RemoveProductWishlist {
         this.repository = repository;
     }
 
-    public void removeProduct(final String userId, final String productId) {
-        var wishlist = repository.findByUserId(userId)
+    public void removeProduct(final String userId,
+                              final String productId) {
+        final var wishlist = repository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Wishlist not found for user: " + userId));
 
         if (!wishlist.getProductIds().remove(productId)) {

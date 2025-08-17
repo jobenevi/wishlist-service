@@ -24,13 +24,13 @@ import static org.mockito.Mockito.*;
 class AddProductWishlistTest {
 
     @Mock
-    WishlistRepository repository;
+    private WishlistRepository repository;
 
     @InjectMocks
-    AddProductWishlist addProductWishlist;
+    private AddProductWishlist addProductWishlist;
 
-    String userId;
-    WishlistProductRequest request;
+    private String userId;
+    private WishlistProductRequest request;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +43,7 @@ class AddProductWishlistTest {
         when(repository.findByUserId(userId)).thenReturn(Optional.empty());
         when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        WishlistProductResponse response = addProductWishlist.addProduct(userId, request);
+        final WishlistProductResponse response = addProductWishlist.addProduct(userId, request);
 
         assertThat(response.getUserId()).isEqualTo(userId);
         assertThat(response.getProductIds()).containsExactly("prod-1");
@@ -52,14 +52,14 @@ class AddProductWishlistTest {
 
     @Test
     void addProductToExistingWishlistAddsProduct() {
-        WishlistDocument doc = WishlistDocument.builder()
+        final WishlistDocument doc = WishlistDocument.builder()
                 .userId(userId)
                 .productIds(new HashSet<>(List.of("prod-2")))
                 .build();
         when(repository.findByUserId(userId)).thenReturn(Optional.of(doc));
         when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        WishlistProductResponse response = addProductWishlist.addProduct(userId, request);
+        final WishlistProductResponse response = addProductWishlist.addProduct(userId, request);
 
         assertThat(response.getProductIds()).containsExactlyInAnyOrder("prod-2", "prod-1");
         verify(repository).save(doc);
@@ -67,13 +67,13 @@ class AddProductWishlistTest {
 
     @Test
     void addProductAlreadyInWishlistDoesNotDuplicate() {
-        WishlistDocument doc = WishlistDocument.builder()
+        final WishlistDocument doc = WishlistDocument.builder()
                 .userId(userId)
                 .productIds(new HashSet<>(List.of("prod-1")))
                 .build();
         when(repository.findByUserId(userId)).thenReturn(Optional.of(doc));
 
-        WishlistProductResponse response = addProductWishlist.addProduct(userId, request);
+        final WishlistProductResponse response = addProductWishlist.addProduct(userId, request);
 
         assertThat(response.getProductIds()).containsExactly("prod-1");
         verify(repository, never()).save(any());
@@ -81,11 +81,11 @@ class AddProductWishlistTest {
 
     @Test
     void addProductWhenWishlistIsFullThrowsException() {
-        Set<String> fullSet = new HashSet<>();
+        final Set<String> fullSet = new HashSet<>();
         for (int i = 0; i < AddProductWishlist.MAX_ITEMS; i++) {
             fullSet.add("prod-" + i);
         }
-        WishlistDocument doc = WishlistDocument.builder()
+        final WishlistDocument doc = WishlistDocument.builder()
                 .userId(userId)
                 .productIds(fullSet)
                 .build();

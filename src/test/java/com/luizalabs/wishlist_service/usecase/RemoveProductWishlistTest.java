@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,9 +26,9 @@ class RemoveProductWishlistTest {
 
     @Test
     void removeProductRemovesProductWhenPresent() {
-        String userId = "user-1";
-        String productId = "prod-1";
-        WishlistDocument wishlist = WishlistDocument.builder()
+        final String userId = "user-1";
+        final String productId = "prod-1";
+        final WishlistDocument wishlist = WishlistDocument.builder()
                 .userId(userId)
                 .productIds(new java.util.LinkedHashSet<>(java.util.Set.of(productId, "prod-2")))
                 .build();
@@ -41,11 +42,11 @@ class RemoveProductWishlistTest {
 
     @Test
     void removeProductThrowsWhenWishlistNotFound() {
-        String userId = "user-1";
-        String productId = "prod-1";
+        final String userId = "user-1";
+        final String productId = "prod-1";
         when(repository.findByUserId(userId)).thenReturn(Optional.empty());
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
+        assertThatThrownBy(() ->
                         removeProductWishlist.removeProduct(userId, productId)
                 ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Wishlist not found for user: " + userId);
@@ -53,15 +54,15 @@ class RemoveProductWishlistTest {
 
     @Test
     void removeProductThrowsWhenProductNotInWishlist() {
-        String userId = "user-1";
-        String productId = "prod-1";
-        WishlistDocument wishlist = WishlistDocument.builder()
+        final String userId = "user-1";
+        final String productId = "prod-1";
+        final WishlistDocument wishlist = WishlistDocument.builder()
                 .userId(userId)
                 .productIds(new java.util.LinkedHashSet<>(java.util.Set.of("prod-2")))
                 .build();
         when(repository.findByUserId(userId)).thenReturn(Optional.of(wishlist));
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
+        assertThatThrownBy(() ->
                         removeProductWishlist.removeProduct(userId, productId)
                 ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Product not found in wishlist: " + productId);
