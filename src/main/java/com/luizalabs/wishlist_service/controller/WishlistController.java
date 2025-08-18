@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/wishlists/{userId}/items")
+@RequestMapping("/wishlists/{userId}")
 @RequiredArgsConstructor
 public class WishlistController {
 
     private final AddProductWishlist addProductWishlist;
     private final RemoveProductWishlist removeProductWishlist;
 
-    @PostMapping
+    @PostMapping("/items")
     public ResponseEntity<WishlistProductResponse> addProduct(
             @PathVariable final String userId,
             @Valid @RequestBody final WishlistProductRequest requestBody) {
@@ -34,7 +34,7 @@ public class WishlistController {
                 .body(responseBody);
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/items/{productId}")
     public ResponseEntity<Void> removeProduct(
             @PathVariable final String userId,
             @PathVariable final String productId) {
