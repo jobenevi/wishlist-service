@@ -3,6 +3,7 @@ package com.luizalabs.wishlist_service.usecase;
 import com.luizalabs.wishlist_service.controller.request.WishlistProductRequest;
 import com.luizalabs.wishlist_service.controller.response.WishlistProductResponse;
 import com.luizalabs.wishlist_service.document.WishlistDocument;
+import com.luizalabs.wishlist_service.exceptions.WishlistMaxLimitException;
 import com.luizalabs.wishlist_service.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class AddProductWishlist {
         }
 
         if (wishlist.getProductIds().size() >= MAX_ITEMS) {
-            throw new IllegalStateException("Wishlist limit reached (" + MAX_ITEMS + ")");
+            throw new WishlistMaxLimitException("Wishlist limit reached (" + MAX_ITEMS + ")");
         }
 
         wishlist.getProductIds().add(request.getProductId());

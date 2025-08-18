@@ -3,6 +3,7 @@ package com.luizalabs.wishlist_service.usecase;
 import com.luizalabs.wishlist_service.controller.request.WishlistProductRequest;
 import com.luizalabs.wishlist_service.controller.response.WishlistProductResponse;
 import com.luizalabs.wishlist_service.document.WishlistDocument;
+import com.luizalabs.wishlist_service.exceptions.WishlistMaxLimitException;
 import com.luizalabs.wishlist_service.repository.WishlistRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +93,7 @@ class AddProductWishlistTest {
         when(repository.findByUserId(userId)).thenReturn(Optional.of(doc));
 
         assertThatThrownBy(() -> addProductWishlist.addProduct(userId, WishlistProductRequest.builder().productId("prod-x").build()))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(WishlistMaxLimitException.class)
                 .hasMessageContaining("Wishlist limit reached");
     }
 }

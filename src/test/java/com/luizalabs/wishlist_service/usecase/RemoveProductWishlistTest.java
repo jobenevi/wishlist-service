@@ -1,6 +1,8 @@
 package com.luizalabs.wishlist_service.usecase;
 
 import com.luizalabs.wishlist_service.document.WishlistDocument;
+import com.luizalabs.wishlist_service.exceptions.ProductNotFoundException;
+import com.luizalabs.wishlist_service.exceptions.WishlistNotFoundException;
 import com.luizalabs.wishlist_service.repository.WishlistRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +50,7 @@ class RemoveProductWishlistTest {
 
         assertThatThrownBy(() ->
                         removeProductWishlist.removeProduct(userId, productId)
-                ).isInstanceOf(IllegalArgumentException.class)
+                ).isInstanceOf(WishlistNotFoundException.class)
                 .hasMessageContaining("Wishlist not found for user: " + userId);
     }
 
@@ -64,7 +66,7 @@ class RemoveProductWishlistTest {
 
         assertThatThrownBy(() ->
                         removeProductWishlist.removeProduct(userId, productId)
-                ).isInstanceOf(IllegalArgumentException.class)
+                ).isInstanceOf(ProductNotFoundException.class)
                 .hasMessageContaining("Product not found in wishlist: " + productId);
     }
 
