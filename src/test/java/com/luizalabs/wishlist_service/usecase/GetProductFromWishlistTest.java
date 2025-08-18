@@ -61,7 +61,7 @@ class GetProductFromWishlistTest {
                 .build();
 
         Mockito.when(wishlistRepository.findAProductByUserIdAndProductId(userId, productId))
-                .thenReturn(Optional.of(doc));
+                .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> getProductFromWishlist.getProductFromWishlist(userId, productId))
                 .isInstanceOf(RuntimeException.class)
