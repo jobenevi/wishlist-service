@@ -8,6 +8,7 @@ import com.luizalabs.wishlist_service.exceptions.ProductNotFoundException;
 import com.luizalabs.wishlist_service.exceptions.WishlistNotFoundException;
 import com.luizalabs.wishlist_service.usecase.AddProductWishlist;
 import com.luizalabs.wishlist_service.usecase.GetAllProductsWishlist;
+import com.luizalabs.wishlist_service.usecase.GetProductFromWishlist;
 import com.luizalabs.wishlist_service.usecase.RemoveProductWishlist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ class WishlistControllerTest {
 
     @MockitoBean
     private GetAllProductsWishlist getAllProductsWishlist;
+
+    @MockitoBean
+    private GetProductFromWishlist getProductFromWishlist;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -141,5 +145,30 @@ class WishlistControllerTest {
                         .get("/wishlists/{userId}/items", userId))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+    @Test
+    void getProductByUserAndProductIdReturnsOkWhenProductExists() throws Exception {
+        String productId = "prod-1";
+        ProductResponse productResponse = ProductResponse.builder().productId(productId).build();
+        Mockito.when(getProductFromWishlist.getProductFromWishlist(userId, productId))
+                .thenReturn(productResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/wishlists/{userId}/items/{productId}", userId, productId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.productId").value(productId));
+    }
+
+    @Test
+    void getProductByUserAndProductIdReturnsNotFoundWhenProductDoesNotExist() throws Exception {
+        String productId = "prod-2";
+        Mockito.when(getProductFromWishlist.getProductFromWishlist(userId, productId))
+                .thenThrow(new ProductNotFoundException("Product not found on wishlist"));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/wishlists/{userId}/items/{productId}", userId, productId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
 
 }

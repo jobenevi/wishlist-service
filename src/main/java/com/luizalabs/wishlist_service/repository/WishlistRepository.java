@@ -12,4 +12,6 @@ public interface WishlistRepository extends MongoRepository<WishlistDocument, St
 
     Optional<WishlistDocument> findAllProductsByUserId(String userId);
 
+    Optional<WishlistDocument> findAProductByUserIdAndProductId(String userId, String productId);
+
 }

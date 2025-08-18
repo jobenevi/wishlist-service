@@ -7,6 +7,7 @@ import com.luizalabs.wishlist_service.exceptions.ProductNotFoundException;
 import com.luizalabs.wishlist_service.exceptions.WishlistNotFoundException;
 import com.luizalabs.wishlist_service.usecase.AddProductWishlist;
 import com.luizalabs.wishlist_service.usecase.GetAllProductsWishlist;
+import com.luizalabs.wishlist_service.usecase.GetProductFromWishlist;
 import com.luizalabs.wishlist_service.usecase.RemoveProductWishlist;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class WishlistController {
     private final AddProductWishlist addProductWishlist;
     private final RemoveProductWishlist removeProductWishlist;
     private final GetAllProductsWishlist getAllProductsWishlist;
+    private final GetProductFromWishlist getProductFromWishlist;
 
     @PostMapping("/items")
     public ResponseEntity<WishlistProductResponse> addProduct(
@@ -53,15 +55,16 @@ public class WishlistController {
     @GetMapping("/items")
     public ResponseEntity<List<ProductResponse>> getAllProducts(
             @PathVariable final String userId) {
-
-        final var products = getAllProductsWishlist.getAllProductsByUserId(userId)
-                .stream()
-                .map(product -> ProductResponse.builder()
-                        .productId(product.getProductId())
-                        .build())
         final var products = getAllProductsWishlist.getAllProductsByUserId(userId);
-
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/items/{productId}")
+    public ResponseEntity<ProductResponse> getProductByUserAndProductId(
+            @PathVariable final String userId,
+            @PathVariable final String productId) {
+        final var productResponse = getProductFromWishlist.getProductFromWishlist(userId, productId);
+        return ResponseEntity.ok(productResponse);
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
