@@ -61,7 +61,7 @@ public class WishlistController {
                 .map(product -> ProductResponse.builder()
                         .productId(product.getProductId())
                         .build())
-                .collect(Collectors.toList());
+        final var products = getAllProductsWishlist.getAllProductsByUserId(userId);
 
         return ResponseEntity.ok(products);
     }
