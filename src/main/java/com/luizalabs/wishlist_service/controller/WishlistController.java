@@ -3,6 +3,7 @@ package com.luizalabs.wishlist_service.controller;
 import com.luizalabs.wishlist_service.controller.request.WishlistProductRequest;
 import com.luizalabs.wishlist_service.controller.response.WishlistProductResponse;
 import com.luizalabs.wishlist_service.usecase.AddProductWishlist;
+import com.luizalabs.wishlist_service.usecase.RemoveProductWishlist;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/wishlists/{userId}/items")
+@RequestMapping("/wishlists/{userId}")
 @RequiredArgsConstructor
 public class WishlistController {
 
     private final AddProductWishlist addProductWishlist;
+    private final RemoveProductWishlist removeProductWishlist;
 
-    @PostMapping
+    @PostMapping("/items")
     public ResponseEntity<WishlistProductResponse> addProduct(
             @PathVariable final String userId,
             @Valid @RequestBody final WishlistProductRequest requestBody) {
@@ -31,4 +33,14 @@ public class WishlistController {
                 )
                 .body(responseBody);
     }
+
+    @DeleteMapping("/items/{productId}")
+    public ResponseEntity<Void> removeProduct(
+            @PathVariable final String userId,
+            @PathVariable final String productId) {
+        removeProductWishlist.removeProduct(userId, productId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
