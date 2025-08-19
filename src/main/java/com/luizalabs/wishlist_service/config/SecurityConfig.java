@@ -15,7 +15,8 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final String HS256 = "01234567890123456789012345678901";
+    @Value("${jwt.secret}")
+    private String HS256;
     private static final String ALG_HS256 = "HmacSHA256";
 
     @Bean
