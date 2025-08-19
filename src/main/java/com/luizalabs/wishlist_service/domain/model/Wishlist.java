@@ -20,7 +20,7 @@ public class Wishlist {
     private Wishlist(Long userId, Collection<Long> initialItems) {
         if (userId == null) throw new IllegalArgumentException("userId is required");
         this.userId = userId;
-        this.productIds = new ArrayList<>(new HashSet<>(initialItems));
+        this.productIds = new ArrayList<>(new LinkedHashSet<>(initialItems));
         if (this.productIds.size() > MAX_ITEMS) {
             throw new WishlistMaxLimitException(
                     "Wishlist exceeds max size: " + MAX_ITEMS
