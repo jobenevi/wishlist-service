@@ -40,7 +40,7 @@ public class WishlistController {
                 .body(mapper.wishlistToResponse(wishlist));
     }
 
-    @DeleteMapping("{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> remove(@PathVariable final Long userId,
                                        @PathVariable final Long productId) throws Exception {
         removeProduct.remove(userId, productId);
