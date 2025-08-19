@@ -8,7 +8,9 @@ import java.security.Key;
 import java.util.Date;
 
 public class JwtTestUtils {
-    private static final String SECRET = "01234567890123456789012345678901";
+    private static final String SECRET = System.getenv("JWT_TEST_SECRET") != null
+            ? System.getenv("JWT_TEST_SECRET")
+            : "01234567890123456789012345678901";
     private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     public static String generateToken(String subject) {
