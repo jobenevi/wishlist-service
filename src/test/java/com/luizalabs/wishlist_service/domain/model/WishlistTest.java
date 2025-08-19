@@ -12,6 +12,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WishlistTest {
 
+    private static final int MAX_ITEMS = 20;
+
     @Test
     @DisplayName("create should initialize with empty product list")
     void createInitializesEmpty() {
@@ -40,7 +42,7 @@ class WishlistTest {
     @DisplayName("rehydrate should throw if product list exceeds max size")
     void rehydrateThrowsIfExceedsMaxSize() {
         List<Long> products = new ArrayList<>();
-        for (long i = 1; i <= Wishlist.MAX_ITEMS + 1; i++) products.add(i);
+        for (long i = 1; i <= MAX_ITEMS + 1; i++) products.add(i);
         assertThatThrownBy(() -> Wishlist.rehydrate(1L, products))
                 .isInstanceOf(WishlistMaxLimitException.class)
                 .hasMessageContaining("Wishlist exceeds max size");
@@ -66,7 +68,7 @@ class WishlistTest {
     @DisplayName("addProduct should throw if max size reached")
     void addProductThrowsIfMaxSizeReached() {
         List<Long> products = new ArrayList<>();
-        for (long i = 1; i <= Wishlist.MAX_ITEMS; i++) products.add(i);
+        for (long i = 1; i <= MAX_ITEMS; i++) products.add(i);
         Wishlist wishlist = Wishlist.rehydrate(1L, products);
         assertThatThrownBy(() -> wishlist.addProduct(99L))
                 .isInstanceOf(WishlistMaxLimitException.class)

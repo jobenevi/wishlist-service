@@ -1,5 +1,6 @@
 package com.luizalabs.wishlist_service.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,9 +16,10 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String ALG_HS256 = "HmacSHA256";
+
     @Value("${jwt.secret}")
     private String HS256;
-    private static final String ALG_HS256 = "HmacSHA256";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

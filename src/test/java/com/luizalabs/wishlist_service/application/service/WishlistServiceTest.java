@@ -22,6 +22,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class WishlistServiceTest {
 
+    private static final int MAX_ITEMS = 20;
+
     @Mock
     private WishlistRepositoryPort repository;
 
@@ -84,7 +86,7 @@ class WishlistServiceTest {
     @DisplayName("add should throw if wishlist exceeds max size")
     void addThrowsIfWishlistExceedsMaxSize() {
         Long userId = 1L;
-        List<Long> products = java.util.stream.LongStream.rangeClosed(1, Wishlist.MAX_ITEMS)
+        List<Long> products = java.util.stream.LongStream.rangeClosed(1, MAX_ITEMS)
                 .boxed().toList();
         Wishlist wishlist = Wishlist.rehydrate(userId, products);
         when(repository.findByUserId(userId)).thenReturn(Optional.of(wishlist));

@@ -12,7 +12,7 @@ import java.util.*;
 @EqualsAndHashCode(of = "userId")
 public class Wishlist {
 
-    public static final int MAX_ITEMS = 20;
+    private static final int MAX_ITEMS = 20;
 
     private final Long userId;
     private final List<Long> productIds;
