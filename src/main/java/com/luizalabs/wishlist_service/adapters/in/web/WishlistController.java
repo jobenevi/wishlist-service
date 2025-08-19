@@ -53,7 +53,7 @@ public class WishlistController {
         return ResponseEntity.ok(mapper.wishlistToResponse(wishlist));
     }
 
-    @GetMapping("{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductForUserWishlist(@PathVariable final Long userId,
                                                                      @PathVariable final Long productId) {
         final var wishlist = productUseCase.getProductForUserWishlist(userId, productId);
