@@ -11,6 +11,8 @@ import com.luizalabs.wishlist_service.application.port.in.RemoveProductUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,8 +30,8 @@ public class WishlistController {
     @PostMapping
     public ResponseEntity<WishlistResponse> addProduct(
             @PathVariable final Long userId,
-            @Valid @RequestBody final AddProductRequest body) {
-
+            @Valid @RequestBody final AddProductRequest body,
+            @AuthenticationPrincipal final Jwt jwtAuth) {
         final var wishlist = addProduct.add(userId, body.getProductId());
         final var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")
@@ -42,20 +44,23 @@ public class WishlistController {
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> remove(@PathVariable final Long userId,
-                                       @PathVariable final Long productId) throws Exception {
+                                       @PathVariable final Long productId,
+                                       @AuthenticationPrincipal final Jwt jwtAuth) throws Exception {
         removeProduct.remove(userId, productId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId) {
+    public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId,
+                                                                       @AuthenticationPrincipal final Jwt jwtAuth) {
         final var wishlist = listProducts.get(userId);
         return ResponseEntity.ok(mapper.wishlistToResponse(wishlist));
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductForUserWishlist(@PathVariable final Long userId,
-                                                                     @PathVariable final Long productId) {
+                                                                     @PathVariable final Long productId,
+                                                                     @AuthenticationPrincipal final Jwt jwtAuth) {
         final var wishlist = productUseCase.getProductForUserWishlist(userId, productId);
         return ResponseEntity.ok(mapper.wishlistToProductResponse(wishlist));
 
