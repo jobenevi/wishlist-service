@@ -8,11 +8,13 @@ import com.luizalabs.wishlist_service.application.port.out.WishlistRepositoryPor
 import com.luizalabs.wishlist_service.application.service.WishlistService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class BeanConfig {
 
     @Bean
+    @Primary
     public WishlistService wishlistService(WishlistRepositoryPort repository) {
         return new WishlistService(repository);
     }
@@ -23,18 +25,18 @@ public class BeanConfig {
     }
 
     @Bean
-    public RemoveProductUseCase removeProductUseCase(WishlistService s) {
-        return s;
+    public RemoveProductUseCase removeProductUseCase(WishlistService service) {
+        return service;
     }
 
     @Bean
-    public ListProductsUseCase listProductsUseCase(WishlistService s)  {
-        return s;
+    public ListProductsUseCase listProductsUseCase(WishlistService service)  {
+        return service;
     }
 
     @Bean
-    public ProductUseCase checkProductUseCase(WishlistService s) {
-        return s;
+    public ProductUseCase productUseCase(WishlistService service) {
+        return service;
     }
 
 }

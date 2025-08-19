@@ -7,6 +7,6 @@ import java.util.Optional;
 public interface SpringDataWishlistRepository extends MongoRepository<WishlistDocument, String> {
 
     Optional<WishlistDocument> findByUserId(Long userId);
-    Optional<WishlistDocument> findProductForUserWishlist(Long userId, Long productId);
+    Optional<WishlistDocument> findByUserIdAndProductIdsContaining(Long userId, Long productId);
 
 }

@@ -3,6 +3,7 @@ package com.luizalabs.wishlist_service.adapters.in.web;
 import com.luizalabs.wishlist_service.adapters.in.web.dto.request.AddProductRequest;
 import com.luizalabs.wishlist_service.adapters.in.web.dto.response.ProductResponse;
 import com.luizalabs.wishlist_service.adapters.in.web.dto.response.WishlistResponse;
+import com.luizalabs.wishlist_service.adapters.in.web.mapper.WishlistWebMapper;
 import com.luizalabs.wishlist_service.application.port.in.AddProductUseCase;
 import com.luizalabs.wishlist_service.application.port.in.ListProductsUseCase;
 import com.luizalabs.wishlist_service.application.port.in.ProductUseCase;
@@ -47,7 +48,7 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<WishlistResponse> list(@PathVariable final Long userId) {
+    public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId) {
         final var wishlist = listProducts.get(userId);
         return ResponseEntity.ok(mapper.wishlistToResponse(wishlist));
     }

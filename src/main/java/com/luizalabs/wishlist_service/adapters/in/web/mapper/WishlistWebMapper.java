@@ -1,4 +1,4 @@
-package com.luizalabs.wishlist_service.adapters.in.web;
+package com.luizalabs.wishlist_service.adapters.in.web.mapper;
 
 import com.luizalabs.wishlist_service.adapters.in.web.dto.response.ProductResponse;
 import com.luizalabs.wishlist_service.adapters.in.web.dto.response.WishlistResponse;
