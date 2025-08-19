@@ -29,11 +29,14 @@ public class WishlistService implements AddProductUseCase,
 
     @Override
     public void remove(final Long userId,
-                       final Long productId) {
+                       final Long productId) throws Exception {
         var wishlist = repository.findByUserId(userId)
                 .orElseThrow(() -> new WishlistNotFoundException("Wishlist not found for user " + userId));
+        if (!wishlist.getProductIds().contains(productId)) {
+            throw new ProductNotFoundException("Product not found in wishlist for user " + userId);
+        }
         wishlist.removeProduct(productId);
-        repository.remove(wishlist);
+        repository.remove(userId, productId);
     }
 
     @Override

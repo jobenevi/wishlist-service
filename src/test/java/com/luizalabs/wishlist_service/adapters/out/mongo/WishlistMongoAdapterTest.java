@@ -51,28 +51,34 @@ class WishlistMongoAdapterTest {
     }
 
     @Test
-    @DisplayName("remove should delete mapped document and not throw")
-    void removeDeletesMappedDocument() throws Exception {
-        Wishlist domain = Wishlist.create(1L);
-        WishlistDocument doc = WishlistDocument.builder().userId(1L).productIds(new LinkedHashSet<>()).build();
-        when(mapper.toDocument(domain)).thenReturn(doc);
-        doNothing().when(repository).delete(doc);
+    @DisplayName("remove should remove only the specified product and save the document")
+    void removeRemovesOnlySpecifiedProductAndSaves() throws Exception {
+        Long userId = 1L;
+        Long productId = 2L;
+        LinkedHashSet<Long> products = new LinkedHashSet<>(Set.of(2L, 3L));
+        WishlistDocument doc = WishlistDocument.builder().userId(userId).productIds(products).build();
+        when(repository.findAll()).thenReturn(List.of(doc));
+        when(repository.save(doc)).thenReturn(doc);
 
-        adapter.remove(domain);
-        verify(repository).delete(doc);
+        adapter.remove(userId, productId);
+
+        assertThat(doc.getProductIds()).doesNotContain(productId);
+        verify(repository).save(doc);
     }
 
     @Test
-    @DisplayName("remove should wrap and throw exception on error")
+    @DisplayName("remove should wrap and throw exception on error during save")
     void removeWrapsAndThrowsOnError() {
-        Wishlist domain = Wishlist.create(1L);
-        WishlistDocument doc = WishlistDocument.builder().userId(1L).productIds(new LinkedHashSet<>()).build();
-        when(mapper.toDocument(domain)).thenReturn(doc);
-        doThrow(new RuntimeException("fail")).when(repository).delete(doc);
+        Long userId = 1L;
+        Long productId = 2L;
+        LinkedHashSet<Long> products = new LinkedHashSet<>(Set.of(2L, 3L));
+        WishlistDocument doc = WishlistDocument.builder().userId(userId).productIds(products).build();
+        when(repository.findAll()).thenReturn(List.of(doc));
+        doThrow(new RuntimeException("fail")).when(repository).save(doc);
 
-        assertThatThrownBy(() -> adapter.remove(domain))
+        assertThatThrownBy(() -> adapter.remove(userId, productId))
                 .isInstanceOf(Exception.class)
-                .hasMessageContaining("Error removing wishlist");
+                .hasMessageContaining("Error removing product from wishlist");
     }
 
     @Test

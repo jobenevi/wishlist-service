@@ -23,11 +23,20 @@ public class WishlistMongoAdapter implements WishlistRepositoryPort {
     }
 
     @Override
-    public void remove(final Wishlist wishlist) throws Exception {
+    public void remove(Long userId, Long productId) throws Exception {
         try {
-            repository.delete(mapper.toDocument(wishlist));
+            var wishlistDocumentOpt = repository.findAll().stream()
+                .filter(doc -> doc.getUserId().equals(userId))
+                .findFirst();
+            if (wishlistDocumentOpt.isPresent()) {
+                var wishlistDocument = wishlistDocumentOpt.get();
+                wishlistDocument.getProductIds().remove(productId);
+                repository.save(wishlistDocument);
+            } else {
+                throw new Exception("Wishlist document not found for userId: " + userId);
+            }
         } catch (Exception e) {
-            throw new Exception("Error removing wishlist: " + e.getMessage(), e);
+            throw new Exception("Error removing product from wishlist: " + e.getMessage(), e);
         }
     }
 

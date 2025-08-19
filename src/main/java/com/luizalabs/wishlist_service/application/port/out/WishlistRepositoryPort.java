@@ -9,6 +9,6 @@ public interface WishlistRepositoryPort {
     Optional<Wishlist> findByUserId(Long userId);
     Wishlist save(Wishlist wishlist);
     Optional<Wishlist> findProductForUserWishlist(Long userId, Long productId);
-    void remove(Wishlist wishlist) throws Exception;
+    void remove(Long userId, Long productId) throws Exception;
 
 }

@@ -100,12 +100,12 @@ class WishlistServiceTest {
         Long productId = 2L;
         Wishlist wishlist = Wishlist.rehydrate(userId, List.of(productId));
         when(repository.findByUserId(userId)).thenReturn(Optional.of(wishlist));
-        doNothing().when(repository).remove(wishlist);
+        doNothing().when(repository).remove(userId, productId);
 
         service.remove(userId, productId);
 
         assertThat(wishlist.getProductIds()).doesNotContain(productId);
-        verify(repository).remove(wishlist);
+        verify(repository).remove(userId, productId);
     }
 
     @Test
