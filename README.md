@@ -77,6 +77,23 @@ curl "http://localhost:8080/wishlists/1/items"
 curl "http://localhost:8080/wishlists/1/items/123"
 ```
 
+### JWT Token Generation for Swagger and API Testing (For Local Testing Only)
+
+> **Warning:** The script below is intended for local testing only. The generated token will **not** work in homologation or production environments, and must not be used for real users or production data.
+
+You can generate a valid JWT for testing using the provided shell script:
+
+```sh
+./jwt-generate.sh
+```
+
+This script will:
+- Read the JWT secret from your `src/main/resources/application.properties`
+- Generate a valid JWT token for user id `1` with 1 hour expiry
+- Print only the token value to the terminal (ready to copy)
+
+Paste the generated token into the "Authorize" field in Swagger UI to authenticate your requests.
+
 ### Configuration
 
 Configuration is managed via `application.properties`. Example:
