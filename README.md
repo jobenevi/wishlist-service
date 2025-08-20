@@ -49,6 +49,21 @@ A RESTful API for managing user wishlists, built with Spring Boot, MongoDB, and 
    ```
 3. The API will be available at `http://localhost:8080`.
 
+### Building and Running with Docker
+
+To build the Docker image locally (the same way as in CI):
+
+```sh
+# Build the Docker image
+docker build -t wishlist-service:ci-demo .
+```
+
+To run the application in a container:
+
+```sh
+docker run -p 8080:8080 wishlist-service:ci-demo
+```
+
 ### API Documentation
 - Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 - OpenAPI JSON: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
