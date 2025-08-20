@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -32,18 +34,20 @@ public class WishlistController {
     private final ProductUseCase productUseCase;
     private final WishlistWebMapper mapper;
 
-    @Operation(summary = "Add a product to the user's wishlist")
     @ApiResponse(responseCode = "201", description = "Product added",
             content = @Content(schema = @Schema(implementation = WishlistResponse.class)))
     @ApiResponse(responseCode = "422", description = "Wishlist limit reached",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation error",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @PostMapping("/{userId}/product")
     public ResponseEntity<WishlistResponse> addProduct(
             @PathVariable final Long userId,
-            @Valid @RequestBody final AddProductRequest body) {
-
+            @Valid @RequestBody final AddProductRequest body,
+            @AuthenticationPrincipal final Jwt jwt
+    ) {
         final var wishlist = addProduct.add(userId, body.getProductId());
         final var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")
@@ -55,12 +59,16 @@ public class WishlistController {
     }
 
     @Operation(summary = "Remove a product from the user's wishlist")
-    @ApiResponse(responseCode = "204", description = "Product removed")
+    @ApiResponse(responseCode = "204", description = "Removed")
     @ApiResponse(responseCode = "404", description = "Product not found in the wishlist",
+            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @DeleteMapping("/{userId}/product/{productId}")
     public ResponseEntity<Void> remove(@PathVariable final Long userId,
-                                       @PathVariable final Long productId) throws Exception {
+                                       @PathVariable final Long productId,
+                                       @AuthenticationPrincipal final Jwt jwt
+    ) throws Exception {
         removeProduct.remove(userId, productId);
         return ResponseEntity.noContent().build();
     }
@@ -70,8 +78,12 @@ public class WishlistController {
             content = @Content(schema = @Schema(implementation = WishlistResponse.class)))
     @ApiResponse(responseCode = "404", description = "Wishlist not found",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @GetMapping("/{userId}/products")
-    public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId) {
+    public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId,
+                                                                       @AuthenticationPrincipal final Jwt jwt
+    ) {
         final var wishlist = listProducts.get(userId);
         return ResponseEntity.ok(mapper.wishlistToResponse(wishlist));
     }
@@ -81,12 +93,14 @@ public class WishlistController {
             content = @Content(schema = @Schema(implementation = ProductResponse.class)))
     @ApiResponse(responseCode = "404", description = "Product not found in the wishlist",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @GetMapping("/{userId}/product/{productId}")
     public ResponseEntity<ProductResponse> getProductForUserWishlist(@PathVariable final Long userId,
-                                                                     @PathVariable final Long productId) {
+                                                                     @PathVariable final Long productId,
+                                                                     @AuthenticationPrincipal final Jwt jwt
+    ) {
         final var wishlist = productUseCase.getProductForUserWishlist(userId, productId);
         return ResponseEntity.ok(mapper.wishlistToProductResponse(wishlist));
-
     }
-
 }

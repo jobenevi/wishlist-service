@@ -86,7 +86,17 @@ spring.application.name=wishlist-service
 springdoc.api-docs.path=/v3/api-docs
 springdoc.swagger-ui.path=/swagger-ui.html
 spring.data.mongodb.uri=mongodb://localhost:27017/wishlist
+
+# JWT secret (must be 256 bits, e.g., 32 chars for HS256)
+spring.security.oauth2.resourceserver.jwt.secret=12345678901234567890123456789012
 ```
+
+#### JWT Authentication
+
+JWT authentication is enabled by default. You must set the property `spring.security.oauth2.resourceserver.jwt.secret` in your `application.properties` or as an environment variable.
+- The secret must be 32 characters (256 bits) for HS256.
+- Example:
+  `spring.security.oauth2.resourceserver.jwt.secret=12345678901234567890123456789012`
 
 #### Environment Variables
 You can override any property using environment variables, e.g.:

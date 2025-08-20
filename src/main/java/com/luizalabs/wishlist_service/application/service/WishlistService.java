@@ -9,7 +9,9 @@ import com.luizalabs.wishlist_service.domain.exception.ProductNotFoundException;
 import com.luizalabs.wishlist_service.domain.exception.WishlistNotFoundException;
 import com.luizalabs.wishlist_service.domain.model.Wishlist;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class WishlistService implements AddProductUseCase,
         RemoveProductUseCase,
