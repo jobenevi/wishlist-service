@@ -23,7 +23,8 @@ public class WishlistMongoAdapter implements WishlistRepositoryPort {
     }
 
     @Override
-    public void remove(Long userId, Long productId) throws Exception {
+    public void remove(final Long userId,
+                       final Long productId) throws Exception {
         try {
             var wishlistDocumentOpt = repository.findAll().stream()
                 .filter(doc -> doc.getUserId().equals(userId))

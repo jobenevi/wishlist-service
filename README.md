@@ -77,6 +77,23 @@ curl "http://localhost:8080/wishlists/1/items"
 curl "http://localhost:8080/wishlists/1/items/123"
 ```
 
+### JWT Token Generation for Swagger and API Testing (For Local Testing Only)
+
+> **Warning:** The script below is intended for local testing only. The generated token will **not** work in homologation or production environments, and must not be used for real users or production data.
+
+You can generate a valid JWT for testing using the provided shell script:
+
+```sh
+./jwt-generate.sh
+```
+
+This script will:
+- Read the JWT secret from your `src/main/resources/application.properties`
+- Generate a valid JWT token for user id `1` with 1 hour expiry
+- Print only the token value to the terminal (ready to copy)
+
+Paste the generated token into the "Authorize" field in Swagger UI to authenticate your requests.
+
 ### Configuration
 
 Configuration is managed via `application.properties`. Example:
@@ -86,7 +103,17 @@ spring.application.name=wishlist-service
 springdoc.api-docs.path=/v3/api-docs
 springdoc.swagger-ui.path=/swagger-ui.html
 spring.data.mongodb.uri=mongodb://localhost:27017/wishlist
+
+# JWT secret (must be 256 bits, e.g., 32 chars for HS256)
+spring.security.oauth2.resourceserver.jwt.secret=12345678901234567890123456789012
 ```
+
+#### JWT Authentication
+
+JWT authentication is enabled by default. You must set the property `spring.security.oauth2.resourceserver.jwt.secret` in your `application.properties` or as an environment variable.
+- The secret must be 32 characters (256 bits) for HS256.
+- Example:
+  `spring.security.oauth2.resourceserver.jwt.secret=12345678901234567890123456789012`
 
 #### Environment Variables
 You can override any property using environment variables, e.g.:
