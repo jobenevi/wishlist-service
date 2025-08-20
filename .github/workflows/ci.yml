@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
-          path: build/reports/jacoco/test/html
+          path: build/reports/jacoco/**
 
       - name: Build Docker Image (Demo)
         run: docker build -t wishlist-service:ci-demo .
