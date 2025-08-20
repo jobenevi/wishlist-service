@@ -70,7 +70,6 @@ public class WishlistController {
             content = @Content(schema = @Schema(implementation = WishlistResponse.class)))
     @ApiResponse(responseCode = "404", description = "Wishlist not found",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
-    @ResponseStatus(code = org.springframework.http.HttpStatus.OK)
     @GetMapping
     public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId) {
         final var wishlist = listProducts.get(userId);
