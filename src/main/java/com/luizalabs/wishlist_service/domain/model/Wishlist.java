@@ -17,7 +17,8 @@ public class Wishlist {
     private final Long userId;
     private final List<Long> productIds;
 
-    private Wishlist(Long userId, Collection<Long> initialItems) {
+    private Wishlist(final Long userId,
+                     final Collection<Long> initialItems) {
         if (userId == null) throw new IllegalArgumentException("userId is required");
         this.userId = userId;
         this.productIds = new ArrayList<>(new LinkedHashSet<>(initialItems));
@@ -28,15 +29,16 @@ public class Wishlist {
         }
     }
 
-    public static Wishlist create(Long userId) {
+    public static Wishlist create(final Long userId) {
         return new Wishlist(userId, Set.of());
     }
 
-    public static Wishlist rehydrate(Long userId, Collection<Long> items) {
+    public static Wishlist rehydrate(final Long userId,
+                                     final Collection<Long> items) {
         return new Wishlist(userId, items);
     }
 
-    public void addProduct(Long productId) {
+    public void addProduct(final Long productId) {
         requireProduct(productId);
         if (productIds.contains(productId)) return;
         if (productIds.size() >= MAX_ITEMS) {
@@ -47,7 +49,7 @@ public class Wishlist {
         productIds.add(productId);
     }
 
-    public void removeProduct(Long productId) {
+    public void removeProduct(final Long productId) {
         requireProduct(productId);
         productIds.remove(productId);
     }
@@ -56,7 +58,7 @@ public class Wishlist {
         return List.copyOf(productIds);
     }
 
-    private static void requireProduct(Long productId) {
+    private static void requireProduct(final Long productId) {
         if (productId == null) throw new IllegalArgumentException("productId is required");
     }
 }

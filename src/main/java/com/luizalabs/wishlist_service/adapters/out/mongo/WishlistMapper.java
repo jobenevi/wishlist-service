@@ -8,12 +8,12 @@ import java.util.LinkedHashSet;
 @Component
 public class WishlistMapper {
     
-    public Wishlist toDomain(WishlistDocument document) {
+    public Wishlist toDomain(final WishlistDocument document) {
         if (document == null) return null;
         return Wishlist.rehydrate(document.getUserId(), document.getProductIds());
     }
 
-    public WishlistDocument toDocument(Wishlist model) {
+    public WishlistDocument toDocument(final Wishlist model) {
         if (model == null) return null;
         return WishlistDocument.builder()
                 .userId(model.getUserId())

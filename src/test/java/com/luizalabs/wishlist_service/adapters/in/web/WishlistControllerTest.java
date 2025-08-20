@@ -64,7 +64,7 @@ class WishlistControllerTest {
         Mockito.when(addProductUseCase.add(eq(userId), eq(productId))).thenReturn(wishlist);
         Mockito.when(mapper.wishlistToResponse(wishlist)).thenReturn(response);
 
-        mockMvc.perform(post("/wishlists/{userId}/items", userId)
+        mockMvc.perform(post("/v1/wishlists/{userId}/product", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -80,7 +80,7 @@ class WishlistControllerTest {
         Long productId = 3L;
         Mockito.doNothing().when(removeProductUseCase).remove(userId, productId);
 
-        mockMvc.perform(delete("/wishlists/{userId}/items/{productId}", userId, productId))
+        mockMvc.perform(delete("/v1/wishlists/{userId}/product/{productId}", userId, productId))
                 .andExpect(status().isNoContent());
     }
 
@@ -95,7 +95,7 @@ class WishlistControllerTest {
         Mockito.when(listProductsUseCase.get(userId)).thenReturn(wishlist);
         Mockito.when(mapper.wishlistToResponse(wishlist)).thenReturn(response);
 
-        mockMvc.perform(get("/wishlists/{userId}/items", userId))
+        mockMvc.perform(get("/v1/wishlists/{userId}/products", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(userId))
                 .andExpect(jsonPath("$.productIds[0]").value(3L))
@@ -113,7 +113,7 @@ class WishlistControllerTest {
         Mockito.when(productUseCase.getProductForUserWishlist(userId, productId)).thenReturn(wishlist);
         Mockito.when(mapper.wishlistToProductResponse(wishlist)).thenReturn(response);
 
-        mockMvc.perform(get("/wishlists/{userId}/items/{productId}", userId, productId))
+        mockMvc.perform(get("/v1/wishlists/{userId}/product/{productId}", userId, productId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(productId));
     }
@@ -123,7 +123,7 @@ class WishlistControllerTest {
     void addProductToWishlist_InvalidBody_ReturnsBadRequest() throws Exception {
         Long userId = 1L;
         String invalidBody = "{}";
-        mockMvc.perform(post("/wishlists/{userId}/items", userId)
+        mockMvc.perform(post("/v1/wishlists/{userId}/product", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidBody))
                 .andExpect(status().isBadRequest());
@@ -137,7 +137,7 @@ class WishlistControllerTest {
         Mockito.when(productUseCase.getProductForUserWishlist(userId, productId))
                 .thenThrow(new ProductNotFoundException("Product not found"));
 
-        mockMvc.perform(get("/wishlists/{userId}/items/{productId}", userId, productId))
+        mockMvc.perform(get("/v1/wishlists/{userId}/product/{productId}", userId, productId))
                 .andExpect(status().isNotFound());
     }
 }

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/wishlists/{userId}/items")
+@RequestMapping("v1/wishlists")
 @RequiredArgsConstructor
 @Tag(name = "Wishlist", description = "Wishlist management APIs")
 public class WishlistController {
@@ -39,7 +39,7 @@ public class WishlistController {
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @ApiResponse(responseCode = "400", description = "Validation error",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
-    @PostMapping
+    @PostMapping("/{userId}/product")
     public ResponseEntity<WishlistResponse> addProduct(
             @PathVariable final Long userId,
             @Valid @RequestBody final AddProductRequest body) {
@@ -58,7 +58,7 @@ public class WishlistController {
     @ApiResponse(responseCode = "204", description = "Product removed")
     @ApiResponse(responseCode = "404", description = "Product not found in the wishlist",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/{userId}/product/{productId}")
     public ResponseEntity<Void> remove(@PathVariable final Long userId,
                                        @PathVariable final Long productId) throws Exception {
         removeProduct.remove(userId, productId);
@@ -70,7 +70,7 @@ public class WishlistController {
             content = @Content(schema = @Schema(implementation = WishlistResponse.class)))
     @ApiResponse(responseCode = "404", description = "Wishlist not found",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
-    @GetMapping
+    @GetMapping("/{userId}/products")
     public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId) {
         final var wishlist = listProducts.get(userId);
         return ResponseEntity.ok(mapper.wishlistToResponse(wishlist));
@@ -81,7 +81,7 @@ public class WishlistController {
             content = @Content(schema = @Schema(implementation = ProductResponse.class)))
     @ApiResponse(responseCode = "404", description = "Product not found in the wishlist",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
-    @GetMapping("/{productId}")
+    @GetMapping("/{userId}/product/{productId}")
     public ResponseEntity<ProductResponse> getProductForUserWishlist(@PathVariable final Long userId,
                                                                      @PathVariable final Long productId) {
         final var wishlist = productUseCase.getProductForUserWishlist(userId, productId);
