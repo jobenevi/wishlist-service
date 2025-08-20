@@ -26,4 +26,5 @@ jobs:
         run: ./gradlew build
 
       - name: Fake Deploy (Demo)
-        run: echo "Deploying to production server (fake)..."
+      - name: Publish Artifacts
+        run: ./gradlew publish
