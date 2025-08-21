@@ -15,9 +15,12 @@ public class WishlistWebMapper {
                 .build();
     }
 
-    public ProductResponse wishlistToProductResponse(final Wishlist domain) {
+    public ProductResponse wishlistToProductResponse(final Wishlist domain, final Long productId) {
+        if (!domain.getProductIds().contains(productId)) {
+            throw new IllegalArgumentException("Product " + productId + " not found in wishlist for user " + domain.getUserId());
+        }
         return ProductResponse.builder()
-                .productId(domain.getProductIds().getFirst())
+                .productId(productId)
                 .build();
     }
 
