@@ -31,7 +31,7 @@ A RESTful API for managing user wishlists, built with Spring Boot, MongoDB, and 
 
 ### Prerequisites
 
-* Java 21+ (Java 11+ supported)
+* Java 21+
 * Docker & Docker Compose
 * (Optional) MongoDB locally if not using Docker
 
