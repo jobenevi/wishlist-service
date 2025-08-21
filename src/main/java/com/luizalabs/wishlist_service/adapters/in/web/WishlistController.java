@@ -115,9 +115,8 @@ public class WishlistController {
 
     private void validateUserId(final Long pathUserId,
                                 final Jwt jwt) {
-        String jwtUserId = jwt.hasClaim("user_id")
-                ? String.valueOf(jwt.getClaim("user_id"))
-                : jwt.hasClaim("sub") ? jwt.getSubject() : null;
+        Object claim = jwt.hasClaim("user_id") ? jwt.getClaim("user_id") : null;
+        String jwtUserId = claim != null ? claim.toString() : (jwt.hasClaim("sub") ? jwt.getSubject() : null);
 
         if (!String.valueOf(pathUserId).equals(jwtUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
