@@ -120,6 +120,33 @@ class WishlistServiceTest {
     }
 
     @Test
+    @DisplayName("remove throws ProductNotFoundException when product is not in wishlist")
+    void remove_throwsProductNotFoundException_whenProductNotInWishlist() {
+        Long userId = 1L;
+        Long productId = 99L;
+        Wishlist wishlist = Wishlist.create(userId);
+        when(repository.findByUserId(userId)).thenReturn(Optional.of(wishlist));
+
+        assertThatThrownBy(() -> service.remove(userId, productId))
+                .isInstanceOf(ProductNotFoundException.class)
+                .hasMessageContaining("Product not found in wishlist for user " + userId);
+    }
+
+    @Test
+    @DisplayName("remove succeeds when product is in wishlist")
+    void remove_succeeds_whenProductIsInWishlist() throws Exception {
+        Long userId = 1L;
+        Long productId = 42L;
+        Wishlist wishlist = Wishlist.create(userId);
+        wishlist.addProduct(productId);
+        when(repository.findByUserId(userId)).thenReturn(Optional.of(wishlist));
+        doNothing().when(repository).remove(userId, productId);
+
+        service.remove(userId, productId);
+        verify(repository).remove(userId, productId);
+    }
+
+    @Test
     @DisplayName("get should return wishlist if exists")
     void getReturnsWishlistIfExists() {
         Long userId = 1L;
@@ -151,19 +178,9 @@ class WishlistServiceTest {
         Wishlist wishlist = Wishlist.rehydrate(userId, List.of(productId));
         when(repository.findProductForUserWishlist(userId, productId)).thenReturn(Optional.of(wishlist));
 
-        Wishlist result = service.getProductForUserWishlist(userId, productId);
+        Optional<Long> result = service.getProductForUserWishlist(userId, productId);
 
-        assertThat(result.getProductIds()).contains(productId);
+        assertThat(result).isPresent().contains(productId);
     }
 
-    @Test
-    @DisplayName("getProductForUserWishlist should throw if product not found")
-    void getProductForUserWishlistThrowsIfProductNotFound() {
-        Long userId = 1L;
-        Long productId = 2L;
-        when(repository.findProductForUserWishlist(userId, productId)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.getProductForUserWishlist(userId, productId))
-                .isInstanceOf(ProductNotFoundException.class);
-    }
 }

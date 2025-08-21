@@ -20,4 +20,10 @@ public class WishlistWebMapper {
                 .productId(domain.getProductIds().getFirst())
                 .build();
     }
+
+    public ProductResponse productIdToProductResponse(final Long productId) {
+        return ProductResponse.builder()
+                .productId(productId)
+                .build();
+    }
 }

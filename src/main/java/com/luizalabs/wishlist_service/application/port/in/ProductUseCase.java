@@ -1,9 +1,9 @@
 package com.luizalabs.wishlist_service.application.port.in;
 
-import com.luizalabs.wishlist_service.domain.model.Wishlist;
+import java.util.Optional;
 
 public interface ProductUseCase {
 
-    Wishlist getProductForUserWishlist(Long userId, Long productId);
+    Optional<Long> getProductForUserWishlist(Long userId, Long productId);
 
 }

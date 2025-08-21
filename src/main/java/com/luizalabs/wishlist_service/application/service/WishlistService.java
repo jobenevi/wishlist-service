@@ -11,6 +11,8 @@ import com.luizalabs.wishlist_service.domain.model.Wishlist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class WishlistService implements AddProductUseCase,
@@ -49,9 +51,10 @@ public class WishlistService implements AddProductUseCase,
 
 
     @Override
-    public Wishlist getProductForUserWishlist(final Long userId,
-                                              final Long productId) {
+    public Optional<Long> getProductForUserWishlist(final Long userId,
+                                                    final Long productId) {
         return repository.findProductForUserWishlist(userId, productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found on wishlist; userId:" + userId));
+                .filter(wishlist -> wishlist.getProductIds().contains(productId))
+                .map(wishlist -> productId);
     }
 }
