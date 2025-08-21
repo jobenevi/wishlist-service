@@ -17,10 +17,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
@@ -50,6 +52,7 @@ public class WishlistController {
             @Valid @RequestBody final AddProductRequest body,
             @AuthenticationPrincipal final Jwt jwt
     ) {
+        validateUserId(userId, jwt);
         final var wishlist = addProduct.add(userId, body.getProductId());
         final var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")
@@ -67,10 +70,11 @@ public class WishlistController {
     @ApiResponse(responseCode = "401", description = "Unauthorized",
             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     @DeleteMapping("/{userId}/product/{productId}")
-    public ResponseEntity<Void> remove(@PathVariable final Long userId,
-                                       @PathVariable final Long productId,
-                                       @AuthenticationPrincipal final Jwt jwt
+    public ResponseEntity<Void> removeProduct(@PathVariable final Long userId,
+                                              @PathVariable final Long productId,
+                                              @AuthenticationPrincipal final Jwt jwt
     ) throws Exception {
+        validateUserId(userId, jwt);
         removeProduct.remove(userId, productId);
         return ResponseEntity.noContent().build();
     }
@@ -86,6 +90,7 @@ public class WishlistController {
     public ResponseEntity<WishlistResponse> getAllProductsFromWishList(@PathVariable final Long userId,
                                                                        @AuthenticationPrincipal final Jwt jwt
     ) {
+        validateUserId(userId, jwt);
         final var wishlist = listProducts.get(userId);
         return ResponseEntity.ok(mapper.wishlistToResponse(wishlist));
     }
@@ -102,8 +107,21 @@ public class WishlistController {
                                                                      @PathVariable final Long productId,
                                                                      @AuthenticationPrincipal final Jwt jwt
     ) {
+        validateUserId(userId, jwt);
         final var product = productUseCase.getProductForUserWishlist(userId, productId);
         return product.map(aLong -> ResponseEntity.ok(mapper.productIdToProductResponse(aLong)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    private void validateUserId(final Long pathUserId,
+                                final Jwt jwt) {
+        String jwtUserId = jwt.hasClaim("user_id")
+                ? String.valueOf(jwt.getClaim("user_id"))
+                : jwt.hasClaim("sub") ? jwt.getSubject() : null;
+
+        if (!String.valueOf(pathUserId).equals(jwtUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "User ID in path does not match authenticated user");
+        }
     }
 }

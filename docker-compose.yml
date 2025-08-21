@@ -21,6 +21,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/wishlist"
+      SPRING_PROFILES_ACTIVE: local
     depends_on:
       mongo:
         condition: service_healthy
