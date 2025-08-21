@@ -38,4 +38,19 @@ class WishlistWebMapperTest {
         assertThatThrownBy(() -> mapper.wishlistToProductResponse(domain))
                 .isInstanceOf(NoSuchElementException.class);
     }
+
+    @Test
+    @DisplayName("productIdToProductResponse maps productId correctly")
+    void productIdToProductResponse_mapsProductIdCorrectly() {
+        Long productId = 123L;
+        ProductResponse response = mapper.productIdToProductResponse(productId);
+        assertThat(response.getProductId()).isEqualTo(productId);
+    }
+
+    @Test
+    @DisplayName("productIdToProductResponse handles null productId")
+    void productIdToProductResponse_handlesNullProductId() {
+        ProductResponse response = mapper.productIdToProductResponse(null);
+        assertThat(response.getProductId()).isNull();
+    }
 }

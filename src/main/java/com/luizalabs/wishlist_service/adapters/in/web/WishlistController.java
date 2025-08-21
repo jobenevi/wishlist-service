@@ -102,7 +102,8 @@ public class WishlistController {
                                                                      @PathVariable final Long productId,
                                                                      @AuthenticationPrincipal final Jwt jwt
     ) {
-        final var wishlist = productUseCase.getProductForUserWishlist(userId, productId);
-        return ResponseEntity.ok(mapper.wishlistToProductResponse(wishlist));
+        final var product = productUseCase.getProductForUserWishlist(userId, productId);
+        return product.map(aLong -> ResponseEntity.ok(mapper.productIdToProductResponse(aLong)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -113,8 +113,8 @@ class WishlistControllerTest {
         var wishlist = Wishlist.rehydrate(userId, List.of(productId));
         var response = ProductResponse.builder().productId(productId).build();
 
-        Mockito.when(productUseCase.getProductForUserWishlist(userId, productId)).thenReturn(wishlist);
-        Mockito.when(mapper.wishlistToProductResponse(wishlist)).thenReturn(response);
+        Mockito.when(productUseCase.getProductForUserWishlist(userId, productId)).thenReturn(productId.describeConstable());
+        Mockito.when(mapper.productIdToProductResponse(productId)).thenReturn(response);
 
         mockMvc.perform(get("/v1/wishlists/{userId}/product/{productId}", userId, productId)
                         .header("Authorization", "Bearer test")
