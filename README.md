@@ -13,7 +13,7 @@ A RESTful API for managing user wishlists, built with Spring Boot, MongoDB, and 
 - Interactive API documentation via Swagger UI
 
 ## Tech Stack
-- Java 21 (Java 11+ compatible)
+- Java 21+
 - Spring Boot 3
 - MongoDB (NoSQL)
 - Gradle
@@ -99,7 +99,7 @@ curl "http://localhost:8080/wishlists/1/items/123"
 You can generate a valid JWT for testing using the provided shell script:
 
 ```sh
-./jwt-generate.sh
+./jwt-generate-locally.sh
 ```
 
 This script will:

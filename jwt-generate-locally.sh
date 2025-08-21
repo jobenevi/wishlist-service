@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Extract secret from application.properties
-SECRET=$(grep '^spring.security.oauth2.resourceserver.jwt.secret=' src/main/resources/application.properties | cut -d'=' -f2)
+SECRET=$(grep '^spring.security.oauth2.resourceserver.jwt.secret=' src/main/resources/application-local.properties | cut -d'=' -f2)
 
 if [ -z "$SECRET" ]; then
   echo "JWT secret not found in application.properties"
