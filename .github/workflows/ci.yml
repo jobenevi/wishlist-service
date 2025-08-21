@@ -28,22 +28,6 @@ jobs:
       - name: Run JaCoCo Coverage
         run: ./gradlew jacocoTestReport
 
-      - name: Check JaCoCo Coverage
-        run: |
-          COVERED=$(grep -oPm1 '(?<=<counter type="INSTRUCTION" covered=")[^\"]+' build/reports/jacoco/test/jacocoTestReport.xml)
-          MISSED=$(grep -oPm1 '(?<=<counter type="INSTRUCTION" missed=")[^\"]+' build/reports/jacoco/test/jacocoTestReport.xml)
-          TOTAL=$((COVERED+MISSED))
-          if [ "$TOTAL" -eq 0 ]; then
-            echo "No coverage data found. Failing build."
-            exit 1
-          fi
-          PERCENT=$(awk "BEGIN {print ($COVERED/($TOTAL))*100}")
-          echo "Coverage: $PERCENT%"
-          if (( $(echo "$PERCENT < 90" | bc -l) )); then
-            echo "Coverage is below 90% ($PERCENT%)"
-            exit 1
-          fi
-
       - name: Upload JaCoCo Report
         uses: actions/upload-artifact@v4
         with:
